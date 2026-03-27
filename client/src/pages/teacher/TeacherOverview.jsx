@@ -1,87 +1,74 @@
 import React, { useState, useEffect } from 'react';
-import { Users, Calendar, Clock, Bell } from 'lucide-react';
 import api from '../../api';
+import { Calendar, Users, BarChart2, Bell } from 'lucide-react';
 
 const TeacherOverview = () => {
-  const [stats, setStats] = useState({
-    totalStudents: 0,
-    assignedClasses: 0,
-    todaySchedule: []
-  });
+  const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
+  const user = JSON.parse(localStorage.getItem('user'));
 
   useEffect(() => {
-    const fetchStats = async () => {
-      try {
-        const response = await api.get('/dashboard-stats/teacher');
-        console.log('Teacher Stats Received:', response.data);
-        setStats({
-          totalStudents: response.data.totalStudents || 0,
-          assignedClasses: response.data.assignedClasses || 0,
-          todaySchedule: response.data.todaySchedule || []
-        });
-      } catch (error) {
-        console.error('Error fetching teacher stats:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchStats();
+    api.get('/dashboard-stats/teacher')
+      .then(r => setStats(r.data))
+      .catch(console.error)
+      .finally(() => setLoading(false));
   }, []);
 
-  if (loading) return <div className="p-8 text-center text-gray-500">Updating overview...</div>;
+  if (loading) return <div className="text-center py-16 text-gray-400">Loading dashboard...</div>;
+
+  const statCards = [
+    { label: 'Assigned Classes', value: stats?.assignedClasses ?? 0, icon: Calendar, color: '#4f46e5', bg: '#ede9fe' },
+    { label: 'Total Students', value: stats?.totalStudents ?? 0, icon: Users, color: '#059669', bg: '#d1fae5' },
+    { label: 'Avg. Attendance', value: stats?.avgAttendance ?? '—', icon: BarChart2, color: '#d97706', bg: '#fef3c7' },
+  ];
 
   return (
     <div className="space-y-8">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-white p-6 rounded-xl shadow-sm border-l-4 border-indigo-600">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-gray-500 text-sm font-medium">Assigned Classes</h3>
-            <div className="p-2 bg-indigo-50 text-indigo-600 rounded-lg"><Calendar size={20} /></div>
-          </div>
-          <p className="text-2xl font-bold text-gray-900">{stats.assignedClasses}</p>
-        </div>
-        <div className="bg-white p-6 rounded-xl shadow-sm border-l-4 border-emerald-500">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-gray-500 text-sm font-medium">Total Students</h3>
-            <div className="p-2 bg-emerald-50 text-emerald-600 rounded-lg"><Users size={20} /></div>
-          </div>
-          <p className="text-2xl font-bold text-gray-900">{stats.totalStudents}</p>
-        </div>
-        <div className="bg-white p-6 rounded-xl shadow-sm border-l-4 border-amber-500">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-gray-500 text-sm font-medium">Notifications</h3>
-            <div className="p-2 bg-amber-50 text-amber-600 rounded-lg"><Bell size={20} /></div>
-          </div>
-          <p className="text-2xl font-bold text-gray-900">3 New</p>
-        </div>
+      <div>
+        <h2 className="text-2xl font-bold text-gray-900">Welcome back, {user?.name?.split(' ')[0]}! 👋</h2>
+        <p className="text-gray-500 mt-1">Here's your teaching summary for today.</p>
       </div>
 
-      <div className="bg-white rounded-xl shadow-sm overflow-hidden">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+        {statCards.map(({ label, value, icon: Icon, color, bg }) => (
+          <div key={label} className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
+            <div className="flex items-center justify-between mb-4">
+              <span className="text-sm font-medium text-gray-500">{label}</span>
+              <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: bg }}>
+                <Icon size={20} style={{ color }} />
+              </div>
+            </div>
+            <p className="text-3xl font-bold text-gray-900">{value}</p>
+          </div>
+        ))}
+      </div>
+
+      {/* Today's Schedule */}
+      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
         <div className="p-6 border-b">
-          <h3 className="text-lg font-bold text-gray-900">Today's Schedule</h3>
+          <h3 className="text-lg font-bold text-gray-900">My Classes</h3>
         </div>
-        <div className="p-6">
-          <div className="space-y-4">
-            {(stats.todaySchedule || []).map((item) => (
-              <div key={item._id} className="flex items-center justify-between p-4 bg-slate-50 rounded-lg border border-slate-100">
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 bg-indigo-100 text-indigo-700 rounded-lg flex items-center justify-center font-bold">
-                    <Clock size={24} />
-                  </div>
-                  <div>
-                    <h4 className="font-bold text-gray-900">{item.course?.name}</h4>
-                    <p className="text-sm text-gray-500">{item.startTime} - {item.endTime} | Room: {item.roomNo}</p>
-                  </div>
+        {stats?.todaySchedule?.length === 0 ? (
+          <div className="p-12 text-center text-gray-400">
+            <div className="text-4xl mb-3">📚</div>
+            <p>No classes assigned yet.</p>
+          </div>
+        ) : (
+          <div className="divide-y">
+            {stats?.todaySchedule?.map(entry => (
+              <div key={entry._id} className="flex items-center gap-4 p-5 hover:bg-gray-50">
+                <div className="px-3 py-2 rounded-xl text-center" style={{ background: '#ede9fe' }}>
+                  <p className="text-xs font-semibold" style={{ color: '#6d28d9' }}>{entry.startTime}</p>
+                  <p className="text-xs" style={{ color: '#7c3aed' }}>{entry.endTime}</p>
                 </div>
-                <button className="text-indigo-600 font-bold text-sm hover:underline">Mark Attendance</button>
+                <div>
+                  <p className="font-semibold text-gray-900">{entry.course?.name || 'Course'}</p>
+                  <p className="text-sm text-gray-500">{entry.day} · {entry.location || 'Online'}</p>
+                </div>
               </div>
             ))}
-            {stats.todaySchedule.length === 0 && (
-              <p className="text-center text-gray-400 italic py-4">No classes scheduled for today.</p>
-            )}
           </div>
-        </div>
+        )}
       </div>
     </div>
   );

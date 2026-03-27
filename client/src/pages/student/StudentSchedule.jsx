@@ -1,60 +1,66 @@
 import React, { useState, useEffect } from 'react';
 import api from '../../api';
-import { Calendar, Clock, User } from 'lucide-react';
 
 const StudentSchedule = () => {
   const [timetable, setTimetable] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchTimetable = async () => {
-      try {
-        const { data } = await api.get('/timetable');
-        // Filter logic would be: check which courses the student is enrolled in
-        setTimetable(data);
-      } catch (error) {
-        console.error('Error fetching schedule:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchTimetable();
+    api.get('/timetable')
+      .then(r => setTimetable(r.data))
+      .catch(console.error)
+      .finally(() => setLoading(false));
   }, []);
 
-  if (loading) return <div className="p-4">Loading your schedule...</div>;
+  const DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+  const colorPalette = ['#ede9fe', '#d1fae5', '#fef3c7', '#fee2e2', '#dbeafe', '#fce7f3'];
 
   return (
     <div className="space-y-6">
-      <h2 className="text-2xl font-bold text-gray-800">My Weekly Schedule</h2>
-      <div className="space-y-4">
-        {timetable.map(item => (
-          <div key={item._id} className="flex flex-col md:flex-row md:items-center justify-between p-6 bg-white rounded-xl shadow-sm border border-slate-100 hover:border-indigo-200 transition-all">
-            <div className="flex items-center gap-6 mb-4 md:mb-0">
-              <div className="w-16 h-16 bg-slate-50 text-indigo-600 rounded-xl flex flex-col items-center justify-center font-bold">
-                <span className="text-xs uppercase">{item.day.substring(0, 3)}</span>
-                <Calendar size={20} />
-              </div>
-              <div>
-                <h3 className="text-xl font-bold text-gray-900">{item.course?.name}</h3>
-                <div className="flex items-center gap-2 text-sm text-gray-500 mt-1">
-                  <User size={14} />
-                  <span>Instructor: {item.assignedTeacher?.name || 'TBA'}</span>
-                </div>
-              </div>
-            </div>
-            <div className="flex items-center gap-8">
-              <div className="text-right">
-                <div className="flex items-center gap-2 font-bold text-gray-900">
-                  <Clock size={16} className="text-indigo-400" />
-                  {item.startTime} - {item.endTime}
-                </div>
-                <div className="text-xs text-gray-400 mt-1">Room: {item.roomNo || 'Hall A'}</div>
-              </div>
-              <button className="px-4 py-2 bg-indigo-50 text-indigo-700 rounded-lg font-bold text-sm hover:bg-indigo-100 transition-colors">Join Class</button>
-            </div>
-          </div>
-        ))}
+      <div>
+        <h2 className="text-2xl font-bold text-gray-900">Class Schedule</h2>
+        <p className="text-gray-500 text-sm mt-1">Your weekly timetable</p>
       </div>
+
+      {loading ? (
+        <div className="text-center py-16 text-gray-400">Loading schedule...</div>
+      ) : timetable.length === 0 ? (
+        <div className="text-center py-16 bg-white rounded-2xl border border-gray-100">
+          <div className="text-5xl mb-3">📅</div>
+          <p className="text-gray-500">No classes scheduled yet. Check back soon!</p>
+        </div>
+      ) : (
+        <div className="space-y-4">
+          {DAYS.map((day, dayIdx) => {
+            const dayClasses = timetable.filter(e => e.day === day).sort((a, b) => a.startTime.localeCompare(b.startTime));
+            if (dayClasses.length === 0) return null;
+            return (
+              <div key={day} className="bg-white rounded-2xl border border-gray-100 overflow-hidden">
+                <div className="px-6 py-3 border-b" style={{ background: colorPalette[dayIdx % colorPalette.length] }}>
+                  <h3 className="font-semibold text-gray-700">{day}</h3>
+                </div>
+                <div className="divide-y">
+                  {dayClasses.map(entry => (
+                    <div key={entry._id} className="flex items-center gap-4 p-5">
+                      <div className="px-3 py-2 rounded-xl text-center flex-shrink-0" style={{ background: colorPalette[dayIdx % colorPalette.length] }}>
+                        <p className="text-xs font-bold text-gray-700">{entry.startTime}</p>
+                        <p className="text-xs text-gray-500">→ {entry.endTime}</p>
+                      </div>
+                      <div className="flex-1">
+                        <p className="font-semibold text-gray-900">{entry.course?.name || 'Class'}</p>
+                        <div className="flex gap-4 text-sm text-gray-500 mt-1">
+                          {entry.location && <span>📍 {entry.location}</span>}
+                          {entry.assignedTeacher && <span>👤 {entry.assignedTeacher.name}</span>}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 };
