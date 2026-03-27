@@ -2,7 +2,9 @@ const Timetable = require('../models/Timetable');
 
 exports.getTimetables = async (req, res) => {
     try {
-        const timetables = await Timetable.find().populate('course').populate('assignedTeacher', 'name');
+        const timetables = await Timetable.find()
+            .populate({ path: 'course', select: 'name teacher' })
+            .populate('assignedTeacher', 'name');
         res.json(timetables);
     } catch (error) {
         res.status(500).json({ message: error.message });

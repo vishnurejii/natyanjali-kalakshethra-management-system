@@ -2,7 +2,7 @@ const Course = require('../models/Course');
 
 exports.getCourses = async (req, res) => {
     try {
-        const courses = await Course.find().populate('teacher', 'name');
+        const courses = await Course.find().populate('teacher', 'name email');
         res.json(courses);
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -12,7 +12,8 @@ exports.getCourses = async (req, res) => {
 exports.createCourse = async (req, res) => {
     try {
         const course = await Course.create(req.body);
-        res.status(201).json(course);
+        const populated = await Course.findById(course._id).populate('teacher', 'name email');
+        res.status(201).json(populated);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
@@ -20,7 +21,8 @@ exports.createCourse = async (req, res) => {
 
 exports.updateCourse = async (req, res) => {
     try {
-        const course = await Course.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        const course = await Course.findByIdAndUpdate(req.params.id, req.body, { new: true })
+            .populate('teacher', 'name email');
         if (!course) return res.status(404).json({ message: 'Course not found' });
         res.json(course);
     } catch (error) {

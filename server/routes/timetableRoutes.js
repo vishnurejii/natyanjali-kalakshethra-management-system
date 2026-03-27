@@ -1,14 +1,11 @@
 const express = require('express');
+const router = express.Router();
 const { getTimetables, createTimetable, updateTimetable, deleteTimetable } = require('../controllers/timetableController');
 const { protect, authorize } = require('../middleware/authMiddleware');
-const router = express.Router();
 
-router.route('/')
-    .get(getTimetables)
-    .post(protect, authorize('admin'), createTimetable);
-
-router.route('/:id')
-    .put(protect, authorize('admin'), updateTimetable)
-    .delete(protect, authorize('admin', 'teacher'), deleteTimetable);
+router.get('/', protect, getTimetables); // any logged-in user
+router.post('/', protect, authorize('admin'), createTimetable);
+router.put('/:id', protect, authorize('admin'), updateTimetable);
+router.delete('/:id', protect, authorize('admin'), deleteTimetable);
 
 module.exports = router;
