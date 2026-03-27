@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import DashboardLayout from '../components/DashboardLayout';
 import AdminOverview from './admin/AdminOverview';
@@ -7,6 +7,8 @@ import TeacherManagement from './admin/TeacherManagement';
 import CourseManagement from './admin/CourseManagement';
 import TimetableManagement from './admin/TimetableManagement';
 import PaymentManagement from './admin/PaymentManagement';
+import NotificationsManagement from './admin/NotificationsManagement';
+import AttendanceManagement from './admin/AttendanceManagement';
 
 const AdminDashboard = () => {
   return (
@@ -18,6 +20,8 @@ const AdminDashboard = () => {
         <Route path="/courses" element={<CourseManagement />} />
         <Route path="/timetable" element={<TimetableManagement />} />
         <Route path="/payments" element={<PaymentManagement />} />
+        <Route path="/notifications" element={<NotificationsManagement />} />
+        <Route path="/attendance" element={<AttendanceManagement />} />
       </Routes>
     </DashboardLayout>
   );
