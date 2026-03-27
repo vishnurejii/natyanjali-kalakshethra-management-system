@@ -4,12 +4,14 @@ import { Navigate } from 'react-router-dom';
 const ProtectedRoute = ({ children, roles }) => {
   const user = JSON.parse(localStorage.getItem('user'));
 
-  if (!user) {
-    return <Navigate to="/login" />;
+  if (!user || !user.token) {
+    return <Navigate to="/login" replace />;
   }
 
   if (roles && !roles.includes(user.role)) {
-    return <Navigate to="/" />;
+    // Redirect to their correct dashboard
+    const redirectMap = { admin: '/admin', teacher: '/teacher', student: '/student' };
+    return <Navigate to={redirectMap[user.role] || '/login'} replace />;
   }
 
   return children;
