@@ -20,71 +20,70 @@ const Navbar = () => {
   };
 
   return (
-    <nav className={`fixed top-0 w-full z-50 transition-all duration-300 ${scrolled ? 'shadow-lg' : ''}`}
-      style={{ background: scrolled ? 'rgba(30,27,75,0.98)' : 'rgba(30,27,75,0.7)', backdropFilter: 'blur(12px)' }}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <nav className={`fixed top-0 w-full z-50 transition-all duration-500 ${scrolled ? 'glass-nav py-2' : 'bg-transparent py-4'}`}>
+      <div className="max-w-7xl mx-auto px-6 sm:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-3 group">
-            <span className="text-2xl">🎭</span>
+            <span className="text-3xl transition-transform group-hover:scale-110 duration-300">🎭</span>
             <div>
-              <span className="text-white font-bold text-xl" style={{ fontFamily: 'Georgia, serif' }}>
+              <span className="text-white font-bold text-2xl font-sans tracking-tight">
                 Natyanjali
               </span>
-              <span className="text-purple-300 text-xs block leading-none">Kalakshetra</span>
+              <span className="text-white/80 text-xs block leading-none font-medium uppercase tracking-widest mt-1">Kalakshetra</span>
             </div>
           </Link>
 
           {/* Desktop nav */}
-          <div className="hidden md:flex items-center gap-8">
+          <div className="hidden md:flex items-center gap-10">
             {navLinks.map(link => (
               <button
                 key={link}
                 onClick={() => scrollTo(link)}
-                className="text-purple-200 hover:text-white text-sm font-medium transition-colors relative group"
+                className="text-white/90 hover:text-white text-sm font-semibold transition-colors relative group"
               >
                 {link}
-                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-purple-400 group-hover:w-full transition-all duration-300" />
+                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-white group-hover:w-full transition-all duration-300 rounded-full" />
               </button>
             ))}
           </div>
 
           {/* CTA */}
-          <div className="hidden md:flex items-center gap-3">
+          <div className="hidden md:flex items-center gap-4">
             {user ? (
               <Link
                 to={`/${user.role}`}
-                className="px-4 py-2 rounded-lg text-sm font-semibold bg-purple-600 hover:bg-purple-500 text-white transition-all"
+                className="px-6 py-2.5 rounded-full text-sm font-bold bg-white/10 text-white hover:bg-white hover:text-brand-600 transition-all duration-300 border border-white/20 backdrop-blur-md"
               >
-                Go to Dashboard
+                Dashboard
               </Link>
             ) : (
               <Link to="/login"
-                className="px-5 py-2 rounded-lg text-sm font-semibold text-white border border-purple-400 hover:bg-purple-600 hover:border-purple-600 transition-all">
-                Login
+                className="px-6 py-2.5 rounded-full text-sm font-bold bg-white text-brand-600 hover:bg-brand-50 shadow-lg shadow-black/10 transition-all duration-300 hover:-translate-y-0.5">
+                Student Portal
               </Link>
             )}
           </div>
 
           {/* Mobile hamburger */}
-          <button className="md:hidden text-white" onClick={() => setMobileOpen(!mobileOpen)}>
-            <div className={`w-6 h-0.5 bg-white mb-1.5 transition-all ${mobileOpen ? 'rotate-45 translate-y-2' : ''}`} />
-            <div className={`w-6 h-0.5 bg-white mb-1.5 transition-all ${mobileOpen ? 'opacity-0' : ''}`} />
-            <div className={`w-6 h-0.5 bg-white transition-all ${mobileOpen ? '-rotate-45 -translate-y-2' : ''}`} />
+          <button className="md:hidden text-white p-2" onClick={() => setMobileOpen(!mobileOpen)}>
+            <div className={`w-6 h-0.5 bg-current mb-1.5 transition-all ${mobileOpen ? 'rotate-45 translate-y-2' : ''}`} />
+            <div className={`w-6 h-0.5 bg-current mb-1.5 transition-all ${mobileOpen ? 'opacity-0' : ''}`} />
+            <div className={`w-6 h-0.5 bg-current transition-all ${mobileOpen ? '-rotate-45 -translate-y-2' : ''}`} />
           </button>
         </div>
 
         {/* Mobile menu */}
         {mobileOpen && (
-          <div className="md:hidden pb-4 pt-2 border-t border-purple-800">
+          <div className="md:hidden pb-6 pt-4 border-t border-white/10 bg-black/40 backdrop-blur-2xl absolute top-full left-0 w-full px-6 shadow-2xl">
             {navLinks.map(link => (
               <button key={link} onClick={() => scrollTo(link)}
-                className="block w-full text-left text-purple-200 hover:text-white py-2 px-2 text-sm font-medium">
+                className="block w-full text-left text-white/90 hover:text-white hover:bg-white/10 py-3 px-4 rounded-xl text-sm font-semibold mb-2 transition-colors">
                 {link}
               </button>
             ))}
-            <Link to="/login" className="block mt-3 text-center py-2 rounded-lg bg-purple-600 text-white text-sm font-semibold">
-              Login
+            <Link to="/login" className="block mt-6 text-center py-3.5 rounded-xl bg-white text-brand-600 text-sm font-bold shadow-lg">
+              Student Portal
             </Link>
           </div>
         )}

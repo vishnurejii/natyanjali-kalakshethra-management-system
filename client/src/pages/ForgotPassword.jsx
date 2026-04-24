@@ -24,56 +24,47 @@ const ForgotPassword = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4"
-      style={{ background: 'linear-gradient(135deg, #1e1b4b 0%, #312e81 40%, #4c1d95 100%)' }}>
-      <div className="w-full max-w-md rounded-3xl p-8 shadow-2xl"
-        style={{ background: 'rgba(255,255,255,0.96)' }}>
-        <div className="text-center mb-8">
-          <div className="text-4xl mb-3">🔐</div>
-          <h2 className="text-2xl font-bold text-gray-900" style={{ fontFamily: 'Georgia, serif' }}>
-            Reset Password
-          </h2>
-          <p className="text-gray-500 mt-2 text-sm">
-            Enter your email to receive a password reset link
-          </p>
+    <div className="min-h-screen flex items-center justify-center p-6 relative overflow-hidden bg-slate-50">
+      {/* Decorative background blobs */}
+      <div className="absolute -top-24 -right-24 w-96 h-96 bg-brand-200/50 rounded-full blur-[100px] animate-pulse" />
+      <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-accent/20 rounded-full blur-[100px] animate-pulse delay-700" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-brand-50/30 rounded-full blur-[120px] pointer-events-none" />
+
+      <div className="relative z-10 w-full max-w-md glass-panel rounded-[2.5rem] p-10 md:p-12 overflow-hidden">
+        <div className="text-center mb-10">
+          <div className="text-4xl mb-6 hover:scale-110 transition-transform duration-300">🔐</div>
+          <h2 className="text-3xl font-bold text-slate-900 font-serif tracking-tight mb-2">Reset Password</h2>
+          <p className="text-slate-500 font-medium">Enter your email to receive a reset link</p>
         </div>
 
         {status ? (
-          <div className="p-4 rounded-xl bg-green-50 border border-green-200 text-green-700 text-sm text-center mb-6">
-            ✅ {status}
+          <div className="p-6 rounded-2xl bg-green-50/80 backdrop-blur-sm border border-green-100 text-green-700 text-sm font-medium text-center mb-6 animate-in zoom-in-95 duration-500">
+            <p className="text-xl mb-2">📩</p>
+            {status}
           </div>
         ) : (
-          <form onSubmit={handleSubmit} className="space-y-5">
+          <form onSubmit={handleSubmit} className="space-y-6">
             {error && (
-              <div className="p-4 rounded-xl bg-red-50 border border-red-200 text-red-700 text-sm">
+              <div className="bg-rose-50/80 backdrop-blur-sm text-rose-600 p-4 rounded-2xl mb-8 text-sm font-bold text-center border border-rose-100 animate-in fade-in slide-in-from-top-4">
                 ⚠️ {error}
               </div>
             )}
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">Email Address</label>
-              <input
-                type="email"
-                required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+            <div className="space-y-2">
+              <label className="block text-xs font-bold text-slate-500 uppercase tracking-widest pl-1">Email Address</label>
+              <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)}
                 placeholder="your@email.com"
-                className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
-              />
+                className="w-full px-6 py-4 rounded-2xl bg-white/50 border border-slate-200 text-slate-900 placeholder-slate-400 focus:outline-none focus:bg-white focus:ring-4 focus:ring-brand-500/10 focus:border-brand-500 transition-all duration-300" />
             </div>
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full py-3 rounded-xl text-white font-semibold transition-all hover:-translate-y-0.5 hover:shadow-lg disabled:opacity-60"
-              style={{ background: 'linear-gradient(135deg,#4f46e5,#7c3aed)' }}
-            >
+            <button type="submit" disabled={loading}
+              className="w-full py-4 rounded-2xl text-white font-bold text-lg flex items-center justify-center bg-brand-600 hover:bg-brand-700 shadow-xl shadow-brand-500/20 hover:shadow-brand-500/40 transition-all duration-300 mt-8 active:scale-[0.98] disabled:opacity-60">
               {loading ? 'Sending...' : 'Send Reset Link'}
             </button>
           </form>
         )}
 
-        <div className="mt-6 text-center">
-          <Link to="/login" className="text-sm font-medium" style={{ color: '#4f46e5' }}>
-            ← Back to Login
+        <div className="mt-10 text-center">
+          <Link to="/login" className="text-sm font-bold text-brand-600 hover:text-brand-700 transition-colors flex items-center justify-center gap-2">
+            <span>←</span> Back to Login
           </Link>
         </div>
       </div>

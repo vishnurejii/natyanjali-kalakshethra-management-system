@@ -1,134 +1,66 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import api from '../api';
+import axios from 'axios';
 
 const Login = () => {
-  const [form, setForm] = useState({ email: '', password: '' });
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
-
-  const handleSubmit = async (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    setError('');
-    setLoading(true);
     try {
-      const { data } = await api.post('/auth/login', form);
-      localStorage.setItem('user', JSON.stringify(data));
-      if (data.role === 'admin') navigate('/admin');
-      else if (data.role === 'teacher') navigate('/teacher');
-      else navigate('/student');
+      const res = await axios.post('/api/auth/login', { email, password });
+      localStorage.setItem('token', res.data.token);
+      localStorage.setItem('user', JSON.stringify(res.data.user));
+      navigate(`/${res.data.user.role}`);
     } catch (err) {
-      setError(err.response?.data?.message || 'Login failed. Please check your credentials.');
-    } finally {
-      setLoading(false);
+      setError('Invalid credentials');
     }
   };
 
   return (
-    <div className="min-h-screen flex" style={{ background: 'linear-gradient(135deg, #1e1b4b 0%, #312e81 40%, #4c1d95 100%)' }}>
-      {/* Left decorative panel */}
-      <div className="hidden lg:flex lg:w-1/2 flex-col items-center justify-center p-12 text-white relative overflow-hidden">
-        <div className="absolute inset-0" style={{ background: 'rgba(0,0,0,0.2)' }} />
-        <div className="relative z-10 text-center">
-          <div className="text-7xl mb-6 animate-bounce">🎭</div>
-          <h1 className="text-5xl font-bold mb-4" style={{ fontFamily: 'Georgia, serif', letterSpacing: '-0.02em' }}>
-            Natyanjali
-          </h1>
-          <p className="text-2xl font-light text-purple-200 mb-2">Kalakshetra</p>
-          <p className="text-purple-300 mt-6 max-w-sm text-lg leading-relaxed">
-            "Where art meets excellence — nurturing the classical traditions of dance, music, and fine arts"
-          </p>
-          <div className="flex gap-8 mt-12 text-center">
-            {[['🩰', 'Dance'], ['🎵', 'Music'], ['🎨', 'Arts']].map(([emoji, label]) => (
-              <div key={label}>
-                <div className="text-3xl mb-2">{emoji}</div>
-                <p className="text-purple-200 text-sm">{label}</p>
-              </div>
-            ))}
-          </div>
+    <div className="min-h-screen flex items-center justify-center p-6 relative overflow-hidden bg-slate-50">
+      {/* Decorative background blobs */}
+      <div className="absolute -top-24 -right-24 w-96 h-96 bg-brand-200/50 rounded-full blur-[100px] animate-pulse" />
+      <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-accent/20 rounded-full blur-[100px] animate-pulse delay-700" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-brand-50/30 rounded-full blur-[120px] pointer-events-none" />
+
+      {/* Login Card */}
+      <div className="relative z-10 w-full max-w-md glass-panel rounded-[2.5rem] p-10 md:p-12 overflow-hidden">
+        <div className="text-center mb-10">
+          <Link to="/" className="inline-block text-4xl mb-6 hover:scale-110 transition-transform duration-300">🎭</Link>
+          <h2 className="text-3xl font-bold text-slate-900 font-serif tracking-tight mb-2">Welcome Back</h2>
+          <p className="text-slate-500 font-medium">Sign in to your account</p>
         </div>
-      </div>
 
-      {/* Right login form */}
-      <div className="w-full lg:w-1/2 flex items-center justify-center p-6">
-        <div className="w-full max-w-md">
-          {/* Glassmorphism card */}
-          <div className="rounded-3xl p-8 shadow-2xl" style={{ background: 'rgba(255,255,255,0.95)', backdropFilter: 'blur(20px)' }}>
-            <div className="text-center mb-8">
-              <div className="text-4xl mb-3 lg:hidden">🎭</div>
-              <h2 className="text-3xl font-bold text-gray-900" style={{ fontFamily: 'Georgia, serif' }}>
-                Welcome Back
-              </h2>
-              <p className="text-gray-500 mt-2">Sign in to your account</p>
-            </div>
+        {error && <div className="bg-rose-50/80 backdrop-blur-sm text-rose-600 p-4 rounded-2xl mb-8 text-sm font-bold text-center border border-rose-100 animate-in fade-in slide-in-from-top-4">{error}</div>}
 
-            {error && (
-              <div className="mb-5 p-4 rounded-xl bg-red-50 border border-red-200 text-red-700 text-sm flex items-center gap-2">
-                <span>⚠️</span> {error}
-              </div>
-            )}
-
-            <form onSubmit={handleSubmit} className="space-y-5">
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">Email Address</label>
-                <input
-                  type="email"
-                  name="email"
-                  required
-                  value={form.email}
-                  onChange={handleChange}
-                  placeholder="you@example.com"
-                  className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:border-transparent transition-all"
-                  style={{ focusRingColor: '#4f46e5' }}
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">Password</label>
-                <input
-                  type="password"
-                  name="password"
-                  required
-                  value={form.password}
-                  onChange={handleChange}
-                  placeholder="••••••••"
-                  className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:border-transparent transition-all"
-                />
-                <div className="text-right mt-2">
-                  <Link to="/forgot-password" className="text-sm font-medium" style={{ color: '#4f46e5' }}>
-                    Forgot password?
-                  </Link>
-                </div>
-              </div>
-
-              <button
-                type="submit"
-                disabled={loading}
-                className="w-full py-3 px-6 rounded-xl text-white font-semibold text-base transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5 disabled:opacity-60 disabled:cursor-not-allowed"
-                style={{ background: loading ? '#818cf8' : 'linear-gradient(135deg, #4f46e5, #7c3aed)' }}
-              >
-                {loading ? (
-                  <span className="flex items-center justify-center gap-2">
-                    <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                    Signing in...
-                  </span>
-                ) : 'Sign In'}
-              </button>
-            </form>
-
-            <div className="mt-8 pt-6 border-t border-gray-100 text-center">
-              <Link to="/" className="text-sm font-medium" style={{ color: '#4f46e5' }}>
-                ← Back to Home
-              </Link>
-            </div>
+        <form onSubmit={handleLogin} className="space-y-6">
+          <div className="space-y-2">
+            <label className="block text-xs font-bold text-slate-500 uppercase tracking-widest pl-1">Email Address</label>
+            <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required
+              placeholder="you@email.com"
+              className="w-full px-6 py-4 rounded-2xl bg-white/50 border border-slate-200 text-slate-900 placeholder-slate-400 focus:outline-none focus:bg-white focus:ring-4 focus:ring-brand-500/10 focus:border-brand-500 transition-all duration-300" />
           </div>
+          <div className="space-y-2">
+            <div className="flex justify-between items-center pl-1 pr-1">
+              <label className="block text-xs font-bold text-slate-500 uppercase tracking-widest">Password</label>
+              <Link to="/forgot-password" title="Forgot Password?" className="text-xs font-bold text-brand-600 hover:text-brand-700 transition-colors">Forgot Password?</Link>
+            </div>
+            <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required
+              placeholder="••••••••"
+              className="w-full px-6 py-4 rounded-2xl bg-white/50 border border-slate-200 text-slate-900 placeholder-slate-400 focus:outline-none focus:bg-white focus:ring-4 focus:ring-brand-500/10 focus:border-brand-500 transition-all duration-300" />
+          </div>
+          <button type="submit" className="w-full py-4 rounded-2xl text-white font-bold text-lg flex items-center justify-center bg-brand-600 hover:bg-brand-700 shadow-xl shadow-brand-500/20 hover:shadow-brand-500/40 transition-all duration-300 mt-8 active:scale-[0.98]">
+            Sign In
+          </button>
+        </form>
 
-          <p className="text-center text-purple-200 text-xs mt-6">
-            © 2025 Natyanjali Kalakshetra. All rights reserved.
-          </p>
-        </div>
+        <p className="mt-10 text-center text-slate-500 font-medium">
+          Don't have an account? <Link to="/signup" className="text-brand-600 font-bold hover:text-brand-700 transition-colors underline-offset-4 hover:underline">Sign up</Link>
+        </p>
       </div>
     </div>
   );

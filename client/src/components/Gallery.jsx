@@ -1,67 +1,45 @@
 import React from 'react';
 
-const galleryItems = [
-  { emoji: '🩰', span: 'row-span-2', label: 'Annual Arangetram', year: '2024' },
-  { emoji: '🎵', span: '', label: 'Vocal Concert', year: '2024' },
-  { emoji: '🎨', span: '', label: 'Art Exhibition', year: '2024' },
-  { emoji: '🎭', span: '', label: 'Cultural Festival', year: '2023' },
-  { emoji: '🪘', span: 'row-span-2', label: 'Rhythm Workshop', year: '2023' },
-  { emoji: '🌸', span: '', label: 'Spring Recital', year: '2023' },
-  { emoji: '🎺', span: '', label: 'Instrumental Fest', year: '2022' },
-];
-
 const Gallery = () => {
+  // Placeholder images for the masonry grid
+  const images = [
+    { src: "https://images.unsplash.com/photo-1542614530-580a5202ee26?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80", title: "Arangetram", span: "row-span-2 col-span-2" },
+    { src: "https://images.unsplash.com/photo-1601614748174-8d933bb7b2be?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80", title: "Mudra Practice", span: "row-span-1 col-span-1" },
+    { src: "https://images.unsplash.com/photo-1514320291840-2e0a9bf2a9ae?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80", title: "Vocal Ensemble", span: "row-span-1 col-span-1" },
+    { src: "https://images.unsplash.com/photo-1460036521480-c11c52ebf6ab?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80", title: "Nattuvangam", span: "row-span-1 col-span-2" },
+  ];
+
   return (
-    <section id="gallery" className="py-24 px-4" style={{ background: '#0f0c29' }}>
-      <div className="max-w-6xl mx-auto">
-        <div className="text-center mb-16">
-          <span className="inline-block px-4 py-1 rounded-full text-xs font-semibold uppercase tracking-wider mb-4"
-            style={{ background: 'rgba(124,58,237,0.3)', color: '#c4b5fd' }}>
-            Memories
-          </span>
-          <h2 className="text-4xl md:text-5xl font-bold text-white" style={{ fontFamily: 'Georgia, serif' }}>
-            Our Gallery
-          </h2>
-          <p className="text-purple-300 mt-4 max-w-xl mx-auto">
-            Glimpses of our performances, workshops, and cultural celebrations over the years.
-          </p>
+    <section className="py-32 px-6 sm:px-12 bg-white relative overflow-hidden" id="gallery">
+      {/* Decorative background element */}
+      <div className="absolute top-0 right-0 w-1/3 h-1/3 bg-brand-50/50 rounded-full blur-[120px] -translate-y-1/2 translate-x-1/2" />
+      
+      <div className="max-w-7xl mx-auto relative z-10">
+        <div className="text-center mb-20 space-y-4">
+          <h2 className="text-5xl md:text-6xl font-serif text-slate-900 tracking-tight">Captured Moments</h2>
+          <div className="w-24 h-1 bg-brand-600 mx-auto rounded-full" />
+          <p className="text-slate-500 font-medium max-w-xl mx-auto">Witness the grace, dedication, and artistic excellence of our students in their journey through classical arts.</p>
         </div>
-
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-4 auto-rows-40">
-          {galleryItems.map(({ emoji, span, label, year }, i) => (
-            <div key={i}
-              className={`${span} relative rounded-2xl overflow-hidden group cursor-pointer`}
-              style={{
-                background: `linear-gradient(135deg, hsl(${260 + i * 15}, 70%, ${15 + (i % 3) * 5}%), hsl(${240 + i * 20}, 80%, ${10 + (i % 2) * 8}%))`,
-                minHeight: span === 'row-span-2' ? '320px' : '150px',
-              }}>
-              {/* Content */}
-              <div className="absolute inset-0 flex flex-col items-center justify-center">
-                <div className="text-5xl mb-2 group-hover:scale-110 transition-transform duration-300">{emoji}</div>
-                <div className="opacity-0 group-hover:opacity-100 transition-all duration-300 text-center px-4">
-                  <p className="text-white font-semibold text-sm">{label}</p>
-                  <p className="text-purple-300 text-xs mt-1">{year}</p>
-                </div>
-              </div>
-
-              {/* Hover overlay */}
-              <div className="absolute inset-0 rounded-2xl border-2 border-purple-500/0 group-hover:border-purple-500/60 transition-all duration-300" />
-              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                style={{ background: 'rgba(124,58,237,0.15)' }} />
-
-              {/* Label shown at bottom on hover */}
-              <div className="absolute bottom-0 left-0 right-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300"
-                style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.9), transparent)' }}>
-                <p className="text-white font-medium text-sm">{label}</p>
-                <p className="text-purple-300 text-xs">{year}</p>
+        
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 auto-rows-[240px]">
+          {images.map((img, idx) => (
+            <div key={idx} className={`relative overflow-hidden rounded-3xl group cursor-pointer shadow-premium hover:shadow-2xl transition-all duration-700 ${img.span}`}>
+              <img 
+                src={img.src} 
+                alt={img.title} 
+                className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-slate-900/20 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500 flex flex-col justify-end p-8">
+                <p className="text-brand-400 text-[10px] font-black uppercase tracking-[0.2em] mb-2 translate-y-4 group-hover:translate-y-0 transition-transform duration-500">Exhibition</p>
+                <h4 className="text-white font-serif text-2xl font-medium tracking-wide translate-y-4 group-hover:translate-y-0 transition-transform duration-500 delay-75">{img.title}</h4>
               </div>
             </div>
           ))}
         </div>
 
-        <p className="text-center text-purple-400 text-sm mt-8">
-          📸 Photos from our annual performances, workshops, and cultural events
-        </p>
+        <div className="mt-20 text-center">
+          <button className="btn-premium">View Full Collection</button>
+        </div>
       </div>
     </section>
   );

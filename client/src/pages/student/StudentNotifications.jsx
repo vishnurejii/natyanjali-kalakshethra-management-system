@@ -13,42 +13,60 @@ const StudentNotifications = () => {
       .finally(() => setLoading(false));
   }, []);
 
-  const recipientColor = { All: '#4f46e5', student: '#059669', teacher: '#d97706' };
+  const recipientBadge = { All: 'bg-brand-600', student: 'bg-emerald-600', teacher: 'bg-amber-600' };
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h2 className="text-2xl font-bold text-gray-900">Notifications</h2>
-        <p className="text-gray-500 text-sm mt-1">{notifications.length} announcements</p>
+    <div className="space-y-10">
+      <div className="flex justify-between items-end">
+        <div>
+          <h2 className="text-3xl font-bold text-slate-900 font-serif tracking-tight">Recent Announcements</h2>
+          <p className="text-slate-500 font-medium mt-1">Stay updated with the latest from Natyanjali</p>
+        </div>
+        <div className="hidden md:block">
+          <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">Status</p>
+          <p className="text-sm font-bold text-emerald-600 flex items-center gap-1.5">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+            Up to date
+          </p>
+        </div>
       </div>
 
       {loading ? (
-        <div className="text-center py-16 text-gray-400">Loading notifications...</div>
+        <div className="flex flex-col items-center justify-center py-24 space-y-4">
+          <div className="w-12 h-12 border-4 border-brand-100 border-t-brand-600 rounded-full animate-spin"></div>
+          <p className="text-slate-400 font-medium animate-pulse">Fetching latest updates...</p>
+        </div>
       ) : notifications.length === 0 ? (
-        <div className="text-center py-16 bg-white rounded-2xl border border-gray-100">
-          <div className="text-5xl mb-3">🔔</div>
-          <p className="text-gray-500">No notifications yet. Check back soon!</p>
+        <div className="bento-card py-24 flex flex-col items-center justify-center text-center space-y-6 bg-slate-50/50">
+          <div className="w-20 h-20 rounded-full bg-white flex items-center justify-center text-4xl shadow-sm">🔔</div>
+          <div>
+            <h3 className="text-xl font-bold text-slate-900">No notifications yet</h3>
+            <p className="text-slate-500 mt-1 max-w-xs">We'll notify you here when there's an announcement for you.</p>
+          </div>
         </div>
       ) : (
-        <div className="space-y-3">
+        <div className="grid gap-5">
           {notifications.map(n => (
-            <div key={n._id} className="bg-white rounded-2xl border border-gray-100 p-5 flex gap-4 hover:shadow-sm transition-shadow">
-              <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
-                style={{ background: '#ede9fe' }}>
-                <Bell size={18} style={{ color: '#6d28d9' }} />
+            <div key={n._id} className="bento-card p-6 flex items-start gap-6 hover:border-brand-100 group transition-all">
+              <div className="w-14 h-14 rounded-2xl flex items-center justify-center flex-shrink-0 bg-brand-50 text-brand-600 group-hover:bg-brand-600 group-hover:text-white transition-all duration-500">
+                <Bell size={24} className="group-hover:rotate-12 transition-transform" />
               </div>
-              <div className="flex-1">
-                <div className="flex items-center gap-2 mb-1.5">
-                  <span className="text-xs font-semibold px-2 py-0.5 rounded-full text-white"
-                    style={{ background: recipientColor[n.recipient] || '#6b7280' }}>
-                    {n.recipient === 'All' ? 'Everyone' : n.recipient === 'student' ? 'Students' : n.recipient}
+              <div className="flex-1 space-y-2">
+                <div className="flex flex-wrap items-center gap-3">
+                  <span className={`text-[10px] font-black px-2.5 py-1 rounded-lg text-white uppercase tracking-widest shadow-sm ${recipientBadge[n.recipient] || 'bg-slate-500'}`}>
+                    {n.recipient === 'All' ? 'Everyone' : 'Students'}
                   </span>
                   {n.sender && (
-                    <span className="text-xs text-gray-400">from {n.sender.name} ({n.sender.role})</span>
+                    <span className="text-xs font-bold text-slate-400 flex items-center gap-1">
+                      <span className="w-1 h-1 rounded-full bg-slate-300"></span>
+                      from {n.sender.name}
+                    </span>
                   )}
                 </div>
-                <p className="text-gray-800">{n.message}</p>
-                <p className="text-gray-400 text-xs mt-2">{new Date(n.createdAt).toLocaleString()}</p>
+                <p className="text-slate-700 text-lg leading-relaxed font-medium">{n.message}</p>
+                <p className="text-slate-400 text-[10px] font-bold uppercase tracking-widest">
+                  {new Date(n.createdAt).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
+                </p>
               </div>
             </div>
           ))}

@@ -1,13 +1,68 @@
 @import "tailwindcss";
 
+/* 
+  Theme: Artisan Minimalism
+  Typography: 'Cormorant Garamond' (Serif), 'Inter' (Sans)
+  Colors: Slate-950, Amber-700
+*/
 @theme {
-  --color-indigo-50: #f5f7ff;
-  --color-indigo-600: #4f46e5;
-  --color-indigo-700: #4338ca;
-  --color-indigo-800: #3730a3;
-  --color-indigo-900: #312e81;
+  --color-primary: #0F172A;
+  --color-accent: #B45309;
+  
+  /* Unified Brand Palette (Vibrant Indigo) */
+  --color-brand-50: #eef2ff;
+  --color-brand-100: #e0e7ff;
+  --color-brand-200: #c7d2fe;
+  --color-brand-300: #a5b4fc;
+  --color-brand-400: #818cf8;
+  --color-brand-500: #6366f1;
+  --color-brand-600: #4f46e5;
+  --color-brand-700: #4338ca;
+  --color-brand-800: #3730a3;
+  --color-brand-900: #312e81;
+  --color-brand-950: #1e1b4b;
+  
+  --color-bg-base: #FFFFFF;
+  --color-bg-subtle: #FAFAF9;
+  
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-serif: 'Cormorant Garamond', 'Georgia', serif;
+
+  --shadow-premium: 0 10px 30px -10px rgba(0, 0, 0, 0.1);
+  --shadow-glass: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
 }
 
-body {
-  @apply bg-slate-50 text-slate-900;
+@layer base {
+  body {
+    @apply bg-bg-base text-primary font-sans antialiased;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-serif text-primary tracking-tight;
+  }
+}
+
+@layer utilities {
+  .bento-card {
+    @apply bg-white rounded-3xl border border-slate-100 shadow-premium transition-all duration-500 hover:shadow-[0_20px_50px_-12px_rgba(0,0,0,0.1)] hover:-translate-y-1;
+  }
+  
+  .btn-premium {
+    @apply px-6 py-3 rounded-2xl text-sm tracking-tight font-semibold bg-brand-600 text-white hover:bg-brand-700 transition-all duration-300 shadow-lg shadow-brand-500/20 active:scale-[0.98] hover:-translate-y-0.5;
+  }
+  
+  .btn-accent {
+    @apply px-6 py-3 rounded-2xl text-sm tracking-tight font-semibold bg-accent text-white hover:bg-amber-800 transition-all duration-300 shadow-lg shadow-accent/20 active:scale-[0.98] hover:-translate-y-0.5;
+  }
+
+  .btn-outline {
+    @apply px-6 py-3 rounded-2xl text-sm tracking-tight font-semibold bg-white/50 backdrop-blur-sm border border-slate-200 text-primary hover:bg-slate-50 transition-all duration-300 active:scale-[0.98];
+  }
+
+  .glass-panel {
+    @apply bg-white/70 backdrop-blur-xl border border-white/40 shadow-glass;
+  }
+
+  .hover-lift {
+    @apply transition-transform duration-300 hover:-translate-y-1 hover:shadow-xl;
+  }
 }

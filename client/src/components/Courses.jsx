@@ -1,97 +1,50 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-
-const courses = [
-  {
-    emoji: '🩰',
-    title: 'Classical Dance',
-    subtitle: 'Bharatanatyam',
-    desc: 'Master the divine language of Bharatanatyam — from basic adavus and mudras to full-length abhinaya performances.',
-    duration: '1 year',
-    fee: '₹3,000 / month',
-    badge: 'Most Popular',
-    badgeColor: '#7c3aed',
-  },
-  {
-    emoji: '🎵',
-    title: 'Vocal Music',
-    subtitle: 'Carnatic Classical',
-    desc: 'Learn swaras, ragas, and kirtis under the guidance of professional Carnatic vocalists with decades of experience.',
-    duration: '1.5 years',
-    fee: '₹2,500 / month',
-    badge: '',
-    badgeColor: '',
-  },
-  {
-    emoji: '🎺',
-    title: 'Instrumental Music',
-    subtitle: 'Veena · Flute · Mridangam',
-    desc: 'Explore the melodic and rhythmic dimensions of classical Indian music with hands-on instrumental training.',
-    duration: '2 years',
-    fee: '₹3,500 / month',
-    badge: '',
-    badgeColor: '',
-  },
-  {
-    emoji: '🎨',
-    title: 'Drawing & Arts',
-    subtitle: 'Tanjore · Folk · Sketching',
-    desc: 'Discover the vibrant world of Indian art traditions — from intricate Tanjore paintings to contemporary sketching.',
-    duration: '6 months',
-    fee: '₹2,000 / month',
-    badge: 'New Batch',
-    badgeColor: '#059669',
-  },
-];
 
 const Courses = () => {
+  const courses = [
+    {
+      title: "Bharatanatyam",
+      desc: "Immerse in the ancient cosmic dance. Focus on Adavus, Abhinaya, and profound storytelling.",
+      level: "Beginner to Advanced",
+      tag: "Dance"
+    },
+    {
+      title: "Carnatic Vocal",
+      desc: "Master the intricate ragas and talas. Build a strong foundation in classical south Indian vocal traditions.",
+      level: "All Levels",
+      tag: "Music"
+    },
+    {
+      title: "Classical Flute",
+      desc: "Learn the divine instrument of Krishna. Emphasis on breath control, fingering, and gamakas.",
+      level: "Intermediate",
+      tag: "Instrumental"
+    }
+  ];
+
   return (
-    <section id="courses" className="py-24 px-4"
-      style={{ background: 'linear-gradient(180deg, #faf9ff 0%, #ede9fe 100%)' }}>
+    <section className="py-24 px-6 sm:px-12 bg-bg-subtle" id="courses">
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-16">
-          <span className="inline-block px-4 py-1 rounded-full text-xs font-semibold uppercase tracking-wider mb-4"
-            style={{ background: '#ede9fe', color: '#6d28d9' }}>
-            Our Programmes
-          </span>
-          <h2 className="text-4xl md:text-5xl font-bold text-gray-900" style={{ fontFamily: 'Georgia, serif' }}>
-            Courses We Offer
-          </h2>
-          <p className="text-gray-500 mt-4 max-w-xl mx-auto">
-            Carefully crafted programmes that honour tradition while preparing students for the modern stage.
-          </p>
+          <h2 className="text-4xl font-serif text-primary mb-4">Curriculum</h2>
+          <p className="text-slate-600 font-sans">Disciplines mastered through rigorous devotion.</p>
         </div>
-
-        <div className="grid md:grid-cols-2 xl:grid-cols-4 gap-6">
-          {courses.map(({ emoji, title, subtitle, desc, duration, fee, badge, badgeColor }) => (
-            <div key={title}
-              className="bg-white rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-2 flex flex-col overflow-hidden group">
-              {/* Top accent */}
-              <div className="h-2" style={{ background: 'linear-gradient(135deg, #7c3aed, #4f46e5)' }} />
-              <div className="p-6 flex-1 flex flex-col">
-                <div className="flex items-start justify-between mb-4">
-                  <div className="text-4xl">{emoji}</div>
-                  {badge && (
-                    <span className="text-xs font-semibold px-2.5 py-1 rounded-full text-white"
-                      style={{ background: badgeColor }}>
-                      {badge}
-                    </span>
-                  )}
-                </div>
-                <h3 className="text-lg font-bold text-gray-900 mb-1">{title}</h3>
-                <p className="text-xs font-semibold text-purple-600 uppercase tracking-wider mb-3">{subtitle}</p>
-                <p className="text-gray-500 text-sm leading-relaxed flex-1">{desc}</p>
-
-                <div className="mt-6 pt-4 border-t border-gray-100 flex justify-between text-sm">
-                  <span className="text-gray-400">⏱ {duration}</span>
-                  <span className="font-semibold text-gray-700">{fee}</span>
-                </div>
-
-                <Link to="/login"
-                  className="mt-4 block text-center py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 hover:-translate-y-0.5"
-                  style={{ background: '#ede9fe', color: '#6d28d9' }}>
-                  Enroll Now →
-                </Link>
+        
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {courses.map((course, idx) => (
+            <div key={idx} className="bento-card p-8 group flex flex-col h-full cursor-pointer">
+              <span className="text-xs font-medium text-accent uppercase tracking-widest mb-4 inline-block">
+                {course.tag}
+              </span>
+              <h3 className="text-2xl font-serif text-primary mb-4 group-hover:text-accent transition-colors">
+                {course.title}
+              </h3>
+              <p className="text-slate-600 text-sm leading-relaxed flex-1 mb-6">
+                {course.desc}
+              </p>
+              <div className="flex justify-between items-center mt-auto border-t border-slate-100 pt-4">
+                <span className="text-xs text-slate-400 font-medium">{course.level}</span>
+                <span className="text-accent text-xl opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all">→</span>
               </div>
             </div>
           ))}
