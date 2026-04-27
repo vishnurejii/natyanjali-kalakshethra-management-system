@@ -58,6 +58,22 @@
     @apply px-6 py-3 rounded-2xl text-sm tracking-tight font-semibold bg-white/50 backdrop-blur-sm border border-slate-200 text-primary hover:bg-slate-50 transition-all duration-300 active:scale-[0.98];
   }
 
+  .perspective-2000 {
+    perspective: 2000px;
+  }
+
+  .preserve-3d {
+    transform-style: preserve-3d;
+  }
+
+  .backface-hidden {
+    backface-visibility: hidden;
+  }
+
+  .rotate-y-180 {
+    transform: rotateY(180deg);
+  }
+
   .glass-panel {
     @apply bg-white/70 backdrop-blur-xl border border-white/40 shadow-glass;
   }

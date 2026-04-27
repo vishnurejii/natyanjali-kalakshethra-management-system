@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import api from '../../api';
+import { motion } from 'framer-motion';
+import { Calendar, Clock, MapPin, Sparkles } from 'lucide-react';
 
 const TeacherTimetable = () => {
   const [timetable, setTimetable] = useState([]);
@@ -17,85 +19,127 @@ const TeacherTimetable = () => {
 
   const DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
   const courseColors = [
-    'bg-brand-50 text-brand-600 border-brand-100',
-    'bg-emerald-50 text-emerald-600 border-emerald-100',
-    'bg-amber-50 text-amber-600 border-amber-100',
-    'bg-rose-50 text-rose-600 border-rose-100',
-    'bg-blue-50 text-blue-600 border-blue-100',
+    { bg: 'bg-brand-50', text: 'text-brand-600', border: 'border-brand-100', icon: '🎨' },
+    { bg: 'bg-emerald-50', text: 'text-emerald-600', border: 'border-emerald-100', icon: '🎭' },
+    { bg: 'bg-amber-50', text: 'text-amber-600', border: 'border-amber-100', icon: '✨' },
+    { bg: 'bg-rose-50', text: 'text-rose-600', border: 'border-rose-100', icon: '🌸' },
+    { bg: 'bg-blue-50', text: 'text-blue-600', border: 'border-blue-100', icon: '🌊' },
   ];
 
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: { opacity: 1, transition: { staggerChildren: 0.1 } }
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.6 } }
+  };
+
   return (
-    <div className="space-y-10">
-      <div className="flex justify-between items-end">
+    <motion.div 
+      variants={containerVariants}
+      initial="hidden"
+      animate="visible"
+      className="space-y-12 max-w-6xl mx-auto"
+    >
+      <motion.div variants={itemVariants} className="flex justify-between items-end">
         <div>
-          <h2 className="text-3xl font-bold text-slate-900 font-serif tracking-tight">Academic Schedule</h2>
-          <p className="text-slate-500 font-medium mt-1">Manage and view your assigned teaching hours</p>
+          <div className="flex items-center gap-2 mb-2">
+            <span className="w-8 h-[1px] bg-brand-400"></span>
+            <span className="text-[10px] font-black text-brand-500 uppercase tracking-[0.3em]">Artisan Schedule</span>
+          </div>
+          <h2 className="text-4xl font-bold text-slate-900 font-serif tracking-tight">Academic Timeline</h2>
+          <p className="text-slate-500 font-medium mt-1 italic">Sculpting the path for future masters.</p>
         </div>
-        <div className="hidden md:block">
-          <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">Total Load</p>
-          <p className="text-sm font-bold text-slate-900">{timetable.length} sessions / week</p>
+        <div className="hidden md:block text-right">
+          <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">Teaching Load</p>
+          <p className="text-lg font-bold text-slate-900 font-serif">{timetable.length} <span className="text-sm font-normal text-slate-400 italic">sessions / week</span></p>
         </div>
-      </div>
+      </motion.div>
 
       {loading ? (
         <div className="flex flex-col items-center justify-center py-24 space-y-4">
           <div className="w-12 h-12 border-4 border-brand-100 border-t-brand-600 rounded-full animate-spin"></div>
-          <p className="text-slate-400 font-medium animate-pulse">Organizing your schedule...</p>
+          <p className="text-slate-400 font-medium animate-pulse font-serif italic">Arranging the stars...</p>
         </div>
       ) : timetable.length === 0 ? (
-        <div className="bento-card py-24 flex flex-col items-center justify-center text-center space-y-6 bg-slate-50/50">
-          <div className="w-20 h-20 rounded-full bg-white flex items-center justify-center text-4xl shadow-sm">📅</div>
+        <motion.div variants={itemVariants} className="bento-card py-24 flex flex-col items-center justify-center text-center space-y-6 bg-slate-50/30 border-dashed">
+          <div className="w-24 h-24 rounded-full bg-white flex items-center justify-center text-5xl shadow-sm grayscale opacity-50">📅</div>
           <div>
-            <h3 className="text-xl font-bold text-slate-900">No classes assigned</h3>
-            <p className="text-slate-500 mt-1 max-w-xs">Your timetable is currently empty. Contact the administrator if this is unexpected.</p>
+            <h3 className="text-2xl font-bold text-slate-900 font-serif">A Clear Horizon</h3>
+            <p className="text-slate-500 mt-2 max-w-xs mx-auto">No sessions are currently assigned to your profile. A perfect time for creative exploration.</p>
           </div>
-        </div>
+        </motion.div>
       ) : (
-        <div className="grid gap-8">
-          {DAYS.map(day => {
+        <div className="space-y-12">
+          {DAYS.map((day, dayIdx) => {
             const dayClasses = timetable.filter(e => e.day === day).sort((a, b) => a.startTime.localeCompare(b.startTime));
             if (dayClasses.length === 0) return null;
             return (
-              <div key={day} className="space-y-4">
-                <div className="flex items-center gap-3 ml-2">
-                  <div className="w-1.5 h-6 rounded-full bg-brand-600"></div>
-                  <h3 className="text-xl font-bold text-slate-900 font-serif">{day}</h3>
+              <motion.div key={day} variants={itemVariants} className="space-y-6">
+                <div className="flex items-center gap-4">
+                  <div className="px-4 py-1.5 rounded-full bg-slate-900 text-white text-[10px] font-black uppercase tracking-[0.2em]">
+                    {day}
+                  </div>
+                  <div className="flex-1 h-[1px] bg-slate-100"></div>
                 </div>
-                <div className="grid md:grid-cols-2 gap-4">
+
+                <div className="grid md:grid-cols-2 gap-6">
                   {dayClasses.map((entry, idx) => {
-                    const colorStyle = courseColors[idx % courseColors.length];
+                    const style = courseColors[idx % courseColors.length];
                     return (
-                      <div key={entry._id} className="bento-card p-6 flex items-center gap-6 group transition-all hover:bg-white active:scale-[0.99]">
-                        <div className={`w-20 px-3 py-4 rounded-2xl text-center border shadow-sm transition-all duration-500 group-hover:scale-105 ${colorStyle}`}>
-                          <p className="text-[10px] font-black uppercase tracking-tighter opacity-70 mb-0.5">Time</p>
-                          <p className="text-sm font-black leading-none">{entry.startTime}</p>
-                          <div className="w-full h-[1px] bg-current opacity-10 my-1.5"></div>
-                          <p className="text-[10px] font-bold opacity-60">{entry.endTime}</p>
-                        </div>
-                        <div className="flex-1">
-                          <p className="text-lg font-bold text-slate-900 group-hover:text-brand-600 transition-colors mb-1">{entry.course?.name || 'Academic Class'}</p>
-                          <div className="flex items-center gap-4">
-                            {entry.location && (
-                              <p className="text-xs font-bold text-slate-400 flex items-center gap-1.5">
-                                <span className="text-brand-500 opacity-60">📍</span>
-                                {entry.location}
-                              </p>
-                            )}
-                            <span className="w-1 h-1 rounded-full bg-slate-200"></span>
-                            <p className="text-[10px] font-black text-brand-500 uppercase tracking-widest">Active</p>
+                      <motion.div 
+                        key={entry._id} 
+                        whileHover={{ y: -4 }}
+                        className="bento-card p-8 group relative bg-white border-none shadow-premium overflow-hidden"
+                      >
+                        <div className={`absolute top-0 right-0 w-32 h-32 ${style.bg} opacity-20 rounded-bl-full translate-x-16 -translate-y-16 group-hover:translate-x-12 group-hover:-translate-y-12 transition-transform duration-700`} />
+                        
+                        <div className="flex items-start gap-8 relative z-10">
+                          <div className={`w-24 flex-shrink-0 px-4 py-6 rounded-[2.5rem] text-center border-2 transition-all duration-700 group-hover:scale-105 ${style.bg} ${style.text} ${style.border} shadow-sm`}>
+                            <p className="text-[10px] font-black uppercase tracking-widest opacity-60 mb-2">Time</p>
+                            <p className="text-lg font-black font-serif leading-none">{entry.startTime}</p>
+                            <div className="w-8 h-[1px] bg-current opacity-20 mx-auto my-3"></div>
+                            <p className="text-[10px] font-bold opacity-60">{entry.endTime}</p>
+                          </div>
+                          
+                          <div className="flex-1 pt-2">
+                            <div className="flex items-center gap-3 mb-2">
+                              <span className="text-2xl">{style.icon}</span>
+                              <h4 className="text-2xl font-bold text-slate-900 font-serif tracking-tight group-hover:text-brand-600 transition-colors">{entry.course?.name || 'Art Session'}</h4>
+                            </div>
+                            
+                            <div className="flex flex-wrap items-center gap-y-3 gap-x-6 mt-6">
+                              {entry.location && (
+                                <div className="flex items-center gap-2 text-slate-400">
+                                  <MapPin size={14} className="text-brand-500" />
+                                  <span className="text-xs font-bold uppercase tracking-widest">{entry.location}</span>
+                                </div>
+                              )}
+                              <div className="flex items-center gap-2 text-slate-400">
+                                <Clock size={14} className="text-brand-500" />
+                                <span className="text-xs font-bold uppercase tracking-widest">Active Session</span>
+                              </div>
+                            </div>
                           </div>
                         </div>
-                      </div>
+
+                        <div className="absolute bottom-6 right-8 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                          <Sparkles className={style.text} size={20} />
+                        </div>
+                      </motion.div>
                     );
                   })}
                 </div>
-              </div>
+              </motion.div>
             );
           })}
         </div>
       )}
-    </div>
+    </motion.div>
   );
 };
 
 export default TeacherTimetable;
+
